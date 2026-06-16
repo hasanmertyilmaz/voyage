@@ -13,13 +13,8 @@ Built for the *Mobile Programming Languages* laboratory project.
 
 ## 📸 Screenshots
 
-> 📷 Screenshots are added after running the app. Capture the screens below (see the
-> guide in [`docs/screenshots/`](docs/screenshots/README.md)), drop the PNGs into that
-> folder, then remove the comment markers around the gallery to display them.
->
-> **Journal · Trip detail · Add trip · Map · Login · Profile (light & dark)**
+> Captured on the iOS Simulator (Expo Go, SDK 56).
 
-<!-- After adding docs/screenshots/*.png, delete this line and the closing --> marker to show the gallery:
 | Journal | Trip detail | Add trip | Map |
 | --- | --- | --- | --- |
 | ![Journal](docs/screenshots/01-journal.png) | ![Detail](docs/screenshots/02-detail.png) | ![Add](docs/screenshots/03-add.png) | ![Map](docs/screenshots/04-map.png) |
@@ -27,7 +22,6 @@ Built for the *Mobile Programming Languages* laboratory project.
 | Login | Profile & settings (light/dark) |
 | --- | --- |
 | ![Login](docs/screenshots/05-login.png) | ![Profile](docs/screenshots/06-profile.png) |
--->
 
 ---
 
