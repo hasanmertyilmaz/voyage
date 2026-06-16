@@ -72,7 +72,11 @@ export default function EntryDetailScreen() {
           />
         )}
         <LinearGradient colors={gradients.cardOverlay} style={StyleSheet.absoluteFill} />
-        {!entry.photoUrl ? <Text style={styles.ghost}>🧭</Text> : null}
+        {!entry.photoUrl ? (
+          <View style={styles.ghostWrap}>
+            <Text style={styles.ghost}>🧭</Text>
+          </View>
+        ) : null}
         {entry.weather ? (
           <View style={styles.pill}>
             <Text style={styles.pillText}>
@@ -132,13 +136,16 @@ export default function EntryDetailScreen() {
 const styles = StyleSheet.create({
   content: { padding: Spacing.lg, gap: Spacing.lg, paddingBottom: Spacing.xxxl },
   hero: { height: 300, borderRadius: Radius.xl, overflow: 'hidden', justifyContent: 'flex-end' },
-  ghost: {
+  ghostWrap: {
     position: 'absolute',
-    alignSelf: 'center',
-    top: 70,
-    fontSize: 80,
-    color: 'rgba(255,255,255,0.5)',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  ghost: { fontSize: 80, color: 'rgba(255,255,255,0.5)' },
   pill: {
     position: 'absolute',
     top: Spacing.md,

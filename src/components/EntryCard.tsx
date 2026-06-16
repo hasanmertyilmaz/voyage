@@ -54,7 +54,11 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
 
         <LinearGradient colors={gradients.cardOverlay} style={StyleSheet.absoluteFill} />
 
-        {!entry.photoUrl ? <Text style={styles.ghost}>🧭</Text> : null}
+        {!entry.photoUrl ? (
+          <View style={styles.ghostWrap}>
+            <Text style={styles.ghost}>🧭</Text>
+          </View>
+        ) : null}
 
         {entry.weather ? (
           <View style={styles.pill}>
@@ -91,13 +95,16 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   card: { height: 220, borderRadius: Radius.xl, overflow: 'hidden', justifyContent: 'flex-end' },
-  ghost: {
+  ghostWrap: {
     position: 'absolute',
-    alignSelf: 'center',
-    top: 44,
-    fontSize: 64,
-    color: 'rgba(255,255,255,0.55)',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 140,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  ghost: { fontSize: 60, color: 'rgba(255,255,255,0.6)' },
   pill: {
     position: 'absolute',
     top: Spacing.md,
