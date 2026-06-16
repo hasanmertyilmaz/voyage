@@ -1,10 +1,12 @@
+import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { formatPlaceLabel, searchPlaces, type PlaceResult } from '@/services/geocoding';
 import { pickFromGallery, takePhoto } from '@/services/imagePicker';
 import { getCurrentLocation } from '@/services/location';
 import { useLazyGetCurrentWeatherQuery } from '@/store/api/weatherApi';
@@ -42,23 +44,37 @@ const emptyDraft = (): EntryDraft => ({
   tripDate: todayISODate(),
 });
 
-export function EntryForm({
-  initialDraft,
-  units,
-  submitting,
-  submitLabel,
-  onSubmit,
-}: EntryFormProps) {
+export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubmit }: EntryFormProps) {
   const theme = useTheme();
   const [draft, setDraft] = useState<EntryDraft>({ ...emptyDraft(), ...initialDraft });
   const [errors, setErrors] = useState<{ title?: string; notes?: string }>({});
   const [locating, setLocating] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [query, setQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<PlaceResult[]>([]);
+  const [searching, setSearching] = useState(false);
   const [fetchWeather] = useLazyGetCurrentWeatherQuery();
 
   const update = (patch: Partial<EntryDraft>) => setDraft((current) => ({ ...current, ...patch }));
   const photoPreview = draft.photoLocalUri ?? draft.photoUrl;
   const hasLocation = draft.latitude != null && draft.longitude != null;
+
+  // Set coordinates + place, then capture the weather there (best effort).
+  const applyCoords = async (latitude: number, longitude: number, placeName: string | null) => {
+    update({ latitude, longitude, placeName });
+    try {
+      const weather = await fetchWeather({ latitude, longitude }).unwrap();
+      update({
+        weather: {
+          temperatureC: weather.temperatureC,
+          weatherCode: weather.weatherCode,
+          capturedAt: new Date().toISOString(),
+        },
+      });
+    } catch {
+      // Weather is optional context.
+    }
+  };
 
   const handlePick = async (mode: 'camera' | 'gallery') => {
     const result = mode === 'camera' ? await takePhoto() : await pickFromGallery();
@@ -70,6 +86,29 @@ export function EntryForm({
         `Allow ${mode === 'camera' ? 'camera' : 'photo library'} access in Settings to add a photo.`,
       );
     }
+  };
+
+  const handleSearch = async () => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) return;
+    try {
+      setSearching(true);
+      const results = await searchPlaces(trimmed);
+      setSearchResults(results);
+      if (results.length === 0) {
+        Alert.alert('No places found', `Couldn't find "${trimmed}". Try a different spelling.`);
+      }
+    } catch {
+      Alert.alert('Search failed', 'Could not search places. Check your connection and try again.');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const selectPlace = async (place: PlaceResult) => {
+    setSearchResults([]);
+    setQuery('');
+    await applyCoords(place.latitude, place.longitude, formatPlaceLabel(place));
   };
 
   const handleLocate = async () => {
@@ -85,24 +124,7 @@ export function EntryForm({
         );
         return;
       }
-      update({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        placeName: location.placeName ?? null,
-      });
-      // Capture the weather at this spot — best effort, never blocks saving.
-      try {
-        const weather = await fetchWeather(location.coords).unwrap();
-        update({
-          weather: {
-            temperatureC: weather.temperatureC,
-            weatherCode: weather.weatherCode,
-            capturedAt: new Date().toISOString(),
-          },
-        });
-      } catch {
-        // Weather is optional context.
-      }
+      await applyCoords(location.coords.latitude, location.coords.longitude, location.placeName ?? null);
     } finally {
       setLocating(false);
     }
@@ -122,16 +144,9 @@ export function EntryForm({
     <View style={styles.form}>
       <Card padded={false} style={styles.photoCard}>
         {photoPreview ? (
-          <Image
-            source={{ uri: photoPreview }}
-            style={styles.photo}
-            contentFit="cover"
-            transition={150}
-          />
+          <Image source={{ uri: photoPreview }} style={styles.photo} contentFit="cover" transition={150} />
         ) : (
-          <View
-            style={[styles.photo, styles.photoPlaceholder, { backgroundColor: theme.surfaceAlt }]}
-          >
+          <View style={[styles.photo, styles.photoPlaceholder, { backgroundColor: theme.surfaceAlt }]}>
             <Text style={styles.photoEmoji}>🏞️</Text>
             <Text variant="bodyMuted">Add a photo of your trip</Text>
           </View>
@@ -173,12 +188,7 @@ export function EntryForm({
         </Text>
         <View style={styles.dateRow}>
           <Text variant="body">{formatDate(draft.tripDate)}</Text>
-          <Button
-            title="Change"
-            variant="ghost"
-            fullWidth={false}
-            onPress={() => setShowDatePicker(true)}
-          />
+          <Button title="Change" variant="ghost" fullWidth={false} onPress={() => setShowDatePicker(true)} />
         </View>
         {showDatePicker ? (
           <DateTimePicker
@@ -194,38 +204,69 @@ export function EntryForm({
       </View>
 
       <Card>
-        <Text variant="label" color="textSecondary">
-          Location & weather
-        </Text>
-        {hasLocation ? (
-          <View style={styles.locationInfo}>
-            <Text variant="body">
-              📍 {draft.placeName ?? formatCoords(draft.latitude, draft.longitude)}
-            </Text>
-            <Text variant="caption" color="textMuted">
-              {formatCoords(draft.latitude, draft.longitude)}
-            </Text>
-            {draft.weather ? (
-              <Chip
-                tone="primary"
-                label={`${weatherCodeToInfo(draft.weather.weatherCode).emoji} ${formatTemperature(
-                  draft.weather.temperatureC,
-                  units,
-                )}`}
-              />
-            ) : null}
-          </View>
-        ) : (
-          <Text variant="bodyMuted" style={styles.locationHint}>
-            Tag where this trip happened.
+        <View style={styles.cardInner}>
+          <Text variant="label" color="textSecondary">
+            Location & weather
           </Text>
-        )}
-        <Button
-          title={hasLocation ? 'Update location' : 'Use current location'}
-          variant="secondary"
-          loading={locating}
-          onPress={handleLocate}
-        />
+
+          {hasLocation ? (
+            <View style={styles.locationInfo}>
+              <Text variant="body">
+                📍 {draft.placeName ?? formatCoords(draft.latitude, draft.longitude)}
+              </Text>
+              <Text variant="caption" color="textMuted">
+                {formatCoords(draft.latitude, draft.longitude)}
+              </Text>
+              {draft.weather ? (
+                <Chip
+                  tone="primary"
+                  label={`${weatherCodeToInfo(draft.weather.weatherCode).emoji} ${formatTemperature(
+                    draft.weather.temperatureC,
+                    units,
+                  )}`}
+                />
+              ) : null}
+            </View>
+          ) : (
+            <Text variant="bodyMuted">Search a place, or use your current location.</Text>
+          )}
+
+          <TextField
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search a city or country"
+            autoCapitalize="words"
+            returnKeyType="search"
+            onSubmitEditing={handleSearch}
+            leftIcon={<Ionicons name="search-outline" size={18} color={theme.textMuted} />}
+          />
+          <Button title="Search" variant="secondary" loading={searching} onPress={handleSearch} />
+
+          {searchResults.length > 0 ? (
+            <View style={styles.results}>
+              {searchResults.map((place) => (
+                <Pressable
+                  key={place.id}
+                  accessibilityRole="button"
+                  onPress={() => selectPlace(place)}
+                  style={({ pressed }) => [
+                    styles.resultRow,
+                    { borderColor: theme.border, backgroundColor: pressed ? theme.surfaceAlt : theme.surface },
+                  ]}
+                >
+                  <Text variant="body">📍 {formatPlaceLabel(place)}</Text>
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
+
+          <Button
+            title={hasLocation ? 'Use current location instead' : 'Use current location'}
+            variant="ghost"
+            loading={locating}
+            onPress={handleLocate}
+          />
+        </View>
       </Card>
 
       <Button title={submitLabel} onPress={handleSubmit} loading={submitting} />
@@ -248,6 +289,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: Spacing.xs,
   },
-  locationInfo: { gap: Spacing.xs, marginVertical: Spacing.sm },
-  locationHint: { marginVertical: Spacing.sm },
+  cardInner: { gap: Spacing.md },
+  locationInfo: { gap: Spacing.xs },
+  results: { gap: Spacing.xs },
+  resultRow: { padding: Spacing.md, borderRadius: Radius.md, borderWidth: 1 },
 });
