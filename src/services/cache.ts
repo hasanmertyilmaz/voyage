@@ -2,11 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { Entry } from '@/types/entry';
 
-/**
- * Offline cache (grading criterion 13). Entries fetched while online are cached
- * per-user so they remain browsable without a connection. The cache key is
- * namespaced by user id so accounts never see each other's cached data.
- */
 const entriesKey = (userId: string) => `voyage.entries.${userId}`;
 
 export async function cacheEntries(userId: string, entries: Entry[]): Promise<void> {

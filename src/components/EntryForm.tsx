@@ -42,12 +42,13 @@ const emptyDraft = (): EntryDraft => ({
   tripDate: todayISODate(),
 });
 
-/**
- * Reusable create/edit form. Owns the draft state and the native integrations
- * (camera/gallery, location + reverse geocode, live weather lookup), then hands
- * a validated draft back to the screen via onSubmit.
- */
-export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubmit }: EntryFormProps) {
+export function EntryForm({
+  initialDraft,
+  units,
+  submitting,
+  submitLabel,
+  onSubmit,
+}: EntryFormProps) {
   const theme = useTheme();
   const [draft, setDraft] = useState<EntryDraft>({ ...emptyDraft(), ...initialDraft });
   const [errors, setErrors] = useState<{ title?: string; notes?: string }>({});
@@ -121,9 +122,16 @@ export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubm
     <View style={styles.form}>
       <Card padded={false} style={styles.photoCard}>
         {photoPreview ? (
-          <Image source={{ uri: photoPreview }} style={styles.photo} contentFit="cover" transition={150} />
+          <Image
+            source={{ uri: photoPreview }}
+            style={styles.photo}
+            contentFit="cover"
+            transition={150}
+          />
         ) : (
-          <View style={[styles.photo, styles.photoPlaceholder, { backgroundColor: theme.surfaceAlt }]}>
+          <View
+            style={[styles.photo, styles.photoPlaceholder, { backgroundColor: theme.surfaceAlt }]}
+          >
             <Text style={styles.photoEmoji}>🏞️</Text>
             <Text variant="bodyMuted">Add a photo of your trip</Text>
           </View>
@@ -191,7 +199,9 @@ export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubm
         </Text>
         {hasLocation ? (
           <View style={styles.locationInfo}>
-            <Text variant="body">📍 {draft.placeName ?? formatCoords(draft.latitude, draft.longitude)}</Text>
+            <Text variant="body">
+              📍 {draft.placeName ?? formatCoords(draft.latitude, draft.longitude)}
+            </Text>
             <Text variant="caption" color="textMuted">
               {formatCoords(draft.latitude, draft.longitude)}
             </Text>

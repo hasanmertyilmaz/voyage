@@ -7,8 +7,6 @@ import reducer, {
 } from '@/store/slices/entriesSlice';
 import type { Entry } from '@/types/entry';
 
-// Mock the service layer so the slice loads without the Supabase client.
-// (Jest hoists these mock calls above the imports at transform time.)
 jest.mock('@/services/entriesService', () => ({
   createEntry: jest.fn(),
   updateEntry: jest.fn(),

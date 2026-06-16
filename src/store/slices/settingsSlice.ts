@@ -8,7 +8,7 @@ export interface SettingsState {
   themePreference: ThemePreference;
   units: Units;
   remindersEnabled: boolean;
-  /** True once persisted settings have been read back on launch. */
+
   hydrated: boolean;
 }
 

@@ -28,7 +28,12 @@ export default function NewEntryScreen() {
 
   return (
     <Screen scroll edges={['bottom']}>
-      <EntryForm units={units} submitting={status === 'loading'} submitLabel="Save trip" onSubmit={handleSubmit} />
+      <EntryForm
+        units={units}
+        submitting={status === 'loading'}
+        submitLabel="Save trip"
+        onSubmit={handleSubmit}
+      />
     </Screen>
   );
 }

@@ -6,7 +6,6 @@ import type { Entry, EntryDraft } from '@/types/entry';
 
 import { supabase } from './supabase';
 
-/** Raw row shape as stored in Postgres (snake_case). */
 interface EntryRow {
   id: string;
   user_id: string;
@@ -41,8 +40,10 @@ function mapRowToEntry(row: EntryRow): Entry {
   };
 }
 
-/** Read a local image file and upload it to Storage, returning its public url. */
-async function uploadPhoto(userId: string, localUri: string): Promise<{ url: string; path: string }> {
+async function uploadPhoto(
+  userId: string,
+  localUri: string,
+): Promise<{ url: string; path: string }> {
   const base64 = await FileSystem.readAsStringAsync(localUri, {
     encoding: FileSystem.EncodingType.Base64,
   });

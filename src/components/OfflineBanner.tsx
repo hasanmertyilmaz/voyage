@@ -8,7 +8,6 @@ import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
 import { Text } from './ui/Text';
 
-/** A dismissible-on-reconnect banner shown whenever the device is offline. */
 export function OfflineBanner() {
   const online = useNetworkStatus();
   const theme = useTheme();
@@ -20,7 +19,10 @@ export function OfflineBanner() {
     <Animated.View
       entering={FadeInUp}
       exiting={FadeOutUp}
-      style={[styles.banner, { backgroundColor: theme.warning, paddingTop: insets.top + Spacing.xs }]}
+      style={[
+        styles.banner,
+        { backgroundColor: theme.warning, paddingTop: insets.top + Spacing.xs },
+      ]}
     >
       <Text variant="caption" style={styles.text}>
         You&apos;re offline — showing your saved trips

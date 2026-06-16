@@ -17,10 +17,6 @@ export interface EntryCardProps {
   onPress?: (entry: Entry) => void;
 }
 
-/**
- * Presentational list item (no data dependencies → trivially testable). Wrapped
- * in React.memo so list scrolling doesn't re-render unchanged rows (criterion 9).
- */
 function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
   const theme = useTheme();
   return (
@@ -39,7 +35,12 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
       ]}
     >
       {entry.photoUrl ? (
-        <Image source={{ uri: entry.photoUrl }} style={styles.image} contentFit="cover" transition={200} />
+        <Image
+          source={{ uri: entry.photoUrl }}
+          style={styles.image}
+          contentFit="cover"
+          transition={200}
+        />
       ) : (
         <View style={[styles.image, styles.imageFallback, { backgroundColor: theme.surfaceAlt }]}>
           <Text style={styles.fallbackEmoji}>📷</Text>

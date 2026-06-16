@@ -14,10 +14,6 @@ interface ScreenProps {
   contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
-/**
- * Safe-area aware screen container. Uses Flexbox + relative units only (no
- * hardcoded screen widths) so it adapts to any device size (criterion 2).
- */
 export function Screen({
   children,
   scroll = false,

@@ -13,7 +13,6 @@ describe('formatDate', () => {
 });
 
 describe('formatRelativeDate', () => {
-  // Local noon "today" so the day math is timezone-independent in CI.
   const now = new Date(2026, 5, 16, 12).getTime();
 
   it('labels the same day as Today', () => {

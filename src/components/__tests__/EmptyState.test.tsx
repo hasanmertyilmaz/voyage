@@ -2,8 +2,6 @@ import { fireEvent, render } from '@testing-library/react-native';
 
 import { EmptyState } from '@/components/ui/EmptyState';
 
-// No ThemeProvider is mounted, so useTheme() resolves to the default light
-// palette via context — exactly what we want for an isolated render.
 describe('EmptyState', () => {
   it('renders the title and message', () => {
     const { getByText } = render(

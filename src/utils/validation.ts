@@ -1,7 +1,5 @@
-/** Input validation helpers (grading criterion 14 — never trust user input). */
-
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-export const MIN_PASSWORD_LENGTH = 6; // Supabase requires >= 6
+export const MIN_PASSWORD_LENGTH = 6;
 export const MAX_TITLE_LENGTH = 80;
 export const MAX_NOTES_LENGTH = 1000;
 
@@ -45,7 +43,6 @@ export interface EntryDraftErrors {
   notes?: string;
 }
 
-/** Validate the whole entry form at once, collecting every field error. */
 export function validateEntryDraft(draft: { title: string; notes: string }): {
   valid: boolean;
   errors: EntryDraftErrors;

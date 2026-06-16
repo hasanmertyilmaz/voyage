@@ -28,8 +28,6 @@ function RootNavigator() {
   const router = useRouter();
   const { isDark } = useThemeContext();
 
-  // Bootstrap once: load saved settings, restore the session, and keep Redux in
-  // sync with Supabase auth changes (token refresh / external sign-out).
   useEffect(() => {
     dispatch(loadSettings());
     dispatch(restoreSession());
@@ -44,7 +42,6 @@ function RootNavigator() {
     return () => data.subscription.unsubscribe();
   }, [dispatch]);
 
-  // Auth gate — redirect based on session state and the active route group.
   useEffect(() => {
     if (status === 'initializing') return;
     const inAuthGroup = segments[0] === '(auth)';

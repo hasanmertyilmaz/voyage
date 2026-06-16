@@ -1,11 +1,3 @@
-/**
- * Voyage design system.
- *
- * A single source of truth for colors, spacing, radii and typography so the
- * whole app stays visually consistent (grading criterion 10 — Style & UI/UX).
- * Components read the active color palette through `useTheme()`; the rest of the
- * tokens are theme-independent and imported directly where needed.
- */
 import { Platform } from 'react-native';
 
 export const Colors = {
@@ -49,10 +41,9 @@ export const Colors = {
 
 export type ColorScheme = keyof typeof Colors;
 export type ThemeColor = keyof typeof Colors.light;
-/** Structural palette type (string values) shared by the light & dark schemes. */
+
 export type ThemeColors = Record<ThemeColor, string>;
 
-/** 4-point spacing scale used for every margin/padding/gap in the app. */
 export const Spacing = {
   xs: 4,
   sm: 8,

@@ -8,13 +8,6 @@ export interface LocationResult {
   placeName?: string | null;
 }
 
-/**
- * Resolve the device's current position and a human-readable place name.
- *
- * Permissions are requested and every outcome (granted / denied / undetermined)
- * is reported instead of throwing, so the caller can show a sensible message
- * (grading criterion 6 — handle permission denial gracefully).
- */
 export async function getCurrentLocation(): Promise<LocationResult> {
   const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
@@ -34,12 +27,9 @@ export async function getCurrentLocation(): Promise<LocationResult> {
     const places = await Location.reverseGeocodeAsync(coords);
     if (places.length > 0) {
       const place = places[0];
-      placeName =
-        [place.city, place.region, place.country].filter(Boolean).join(', ') || null;
+      placeName = [place.city, place.region, place.country].filter(Boolean).join(', ') || null;
     }
-  } catch {
-    // Reverse geocoding is best-effort; coordinates are still useful without it.
-  }
+  } catch {}
 
   return { status: 'granted', coords, placeName };
 }

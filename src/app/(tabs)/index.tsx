@@ -42,8 +42,8 @@ export default function JournalScreen() {
 
   useEffect(() => {
     if (!user) return;
-    dispatch(hydrateFromCache(user.id)); // instant offline render
-    dispatch(loadEntries(user.id)); // fresh data
+    dispatch(hydrateFromCache(user.id));
+    dispatch(loadEntries(user.id));
   }, [dispatch, user]);
 
   const openEntry = useCallback((entry: Entry) => router.push(`/entry/${entry.id}`), [router]);

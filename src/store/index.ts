@@ -12,10 +12,6 @@ import settingsReducer, {
   type SettingsState,
 } from './slices/settingsSlice';
 
-/**
- * Listener middleware that persists user settings to AsyncStorage whenever they
- * change, so the theme/units/reminder preferences survive app restarts.
- */
 const listenerMiddleware = createListenerMiddleware();
 listenerMiddleware.startListening({
   matcher: isAnyOf(setThemePreference, setUnits, setRemindersEnabled),
@@ -30,9 +26,7 @@ listenerMiddleware.startListening({
           remindersEnabled: settings.remindersEnabled,
         }),
       );
-    } catch {
-      // Persisting preferences is best-effort.
-    }
+    } catch {}
   },
 });
 
@@ -44,9 +38,7 @@ export const store = configureStore({
     [weatherApi.reducerPath]: weatherApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware()
-      .prepend(listenerMiddleware.middleware)
-      .concat(weatherApi.middleware),
+    getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(weatherApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -17,11 +17,6 @@ interface SwipeableEntryCardProps {
   onDelete: (entry: Entry) => void;
 }
 
-/**
- * Swipe-left-to-delete row (extended criterion D — gestures). Uses the
- * Reanimated-powered Swipeable from gesture-handler, with a haptic tap on
- * confirm.
- */
 export function SwipeableEntryCard({ entry, units, onPress, onDelete }: SwipeableEntryCardProps) {
   const theme = useTheme();
   const { notify } = useHaptics();

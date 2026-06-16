@@ -11,7 +11,9 @@ describe('haversineKm', () => {
   });
 
   it('is zero for identical points', () => {
-    expect(haversineKm({ latitude: 10, longitude: 10 }, { latitude: 10, longitude: 10 })).toBeCloseTo(0);
+    expect(
+      haversineKm({ latitude: 10, longitude: 10 }, { latitude: 10, longitude: 10 }),
+    ).toBeCloseTo(0);
   });
 });
 

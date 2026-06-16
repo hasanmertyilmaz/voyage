@@ -1,6 +1,5 @@
 import reducer, { sessionChanged, signIn, signOut } from '@/store/slices/authSlice';
 
-// Jest hoists this above the import, so the slice never loads the real client.
 jest.mock('@/services/supabase', () => ({ supabase: { auth: {} } }));
 
 const initial = reducer(undefined, { type: '@@INIT' });
@@ -29,7 +28,12 @@ describe('authSlice', () => {
   it('records the error message on a failed sign in', () => {
     const state = reducer(
       initial,
-      signIn.rejected(new Error('bad'), 'req', { email: 'a', password: 'x' }, 'Invalid login credentials'),
+      signIn.rejected(
+        new Error('bad'),
+        'req',
+        { email: 'a', password: 'x' },
+        'Invalid login credentials',
+      ),
     );
     expect(state.error).toBe('Invalid login credentials');
   });

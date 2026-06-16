@@ -16,11 +16,6 @@ interface OpenMeteoResponse {
   };
 }
 
-/**
- * RTK Query slice for the Open-Meteo weather API (extended criterion C +
- * criterion 7). RTK Query handles caching, de-duplication and the
- * loading/error/success states for us, so screens just read the generated hook.
- */
 export const weatherApi = createApi({
   reducerPath: 'weatherApi',
   baseQuery: fetchBaseQuery({ baseUrl: WEATHER_API_BASE }),

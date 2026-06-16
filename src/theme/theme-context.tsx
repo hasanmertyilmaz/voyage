@@ -11,8 +11,6 @@ export interface ThemeContextValue {
   isDark: boolean;
 }
 
-// A light default means components that read the theme still render correctly
-// when no provider is mounted (e.g. in isolated component tests).
 const defaultValue: ThemeContextValue = {
   colors: Colors.light,
   scheme: 'light',
@@ -21,10 +19,6 @@ const defaultValue: ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue>(defaultValue);
 
-/**
- * Resolves the active palette from the user's saved preference combined with
- * the OS color scheme, and exposes it to the tree through context.
- */
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const systemScheme = useColorScheme();
   const preference = useAppSelector(selectThemePreference);

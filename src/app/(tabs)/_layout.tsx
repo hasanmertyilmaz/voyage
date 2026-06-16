@@ -21,14 +21,18 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Journal',
-          tabBarIcon: ({ color, size }) => <Ionicons name="book-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="map"
         options={{
           title: 'Map',
-          tabBarIcon: ({ color, size }) => <Ionicons name="map-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="map-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen

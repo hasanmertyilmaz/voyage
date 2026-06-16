@@ -52,7 +52,12 @@ export default function EntryDetailScreen() {
       <Stack.Screen options={{ title: entry.title }} />
 
       {entry.photoUrl ? (
-        <Image source={{ uri: entry.photoUrl }} style={styles.photo} contentFit="cover" transition={200} />
+        <Image
+          source={{ uri: entry.photoUrl }}
+          style={styles.photo}
+          contentFit="cover"
+          transition={200}
+        />
       ) : null}
 
       <Text variant="display">{entry.title}</Text>
@@ -75,7 +80,9 @@ export default function EntryDetailScreen() {
           <Text variant="label" color="textSecondary">
             Location
           </Text>
-          <Text variant="body">📍 {entry.placeName ?? formatCoords(entry.latitude, entry.longitude)}</Text>
+          <Text variant="body">
+            📍 {entry.placeName ?? formatCoords(entry.latitude, entry.longitude)}
+          </Text>
           {entry.latitude != null ? (
             <Text variant="caption" color="textMuted">
               {formatCoords(entry.latitude, entry.longitude)}

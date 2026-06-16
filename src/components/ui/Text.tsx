@@ -17,7 +17,6 @@ export interface AppTextProps extends TextProps {
   color?: ThemeColor;
 }
 
-/** Typed, theme-aware Text — the single text primitive used across the app. */
 export function Text({ variant = 'body', color, style, ...rest }: AppTextProps) {
   const theme = useTheme();
   const resolvedColor = color
@@ -36,5 +35,10 @@ const styles = StyleSheet.create({
   body: { fontSize: FontSize.md, fontWeight: '400', lineHeight: 22 },
   bodyMuted: { fontSize: FontSize.md, fontWeight: '400', lineHeight: 22 },
   caption: { fontSize: FontSize.sm, fontWeight: '500' },
-  label: { fontSize: FontSize.sm, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 },
+  label: {
+    fontSize: FontSize.sm,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
 });

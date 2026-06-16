@@ -15,12 +15,6 @@ interface State {
   message?: string;
 }
 
-/**
- * Catches render-time crashes anywhere below it and shows a recoverable
- * fallback instead of a white screen (grading criterion 12 — level 2).
- * Must be a class component because only class lifecycles can catch render
- * errors in React.
- */
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false };
 
@@ -29,7 +23,6 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error) {
-    // In production this is where you'd report to Sentry/Crashlytics.
     console.error('Unhandled UI error:', error);
   }
 

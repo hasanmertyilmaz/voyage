@@ -7,9 +7,6 @@ import { Screen } from '@/components/ui/Screen';
 import { useAppSelector } from '@/store/hooks';
 import { selectEntries } from '@/store/slices/entriesSlice';
 
-// react-native-maps relies on a native module that isn't present on web and may
-// be missing in some Expo Go builds — require defensively so the rest of the app
-// is unaffected if it can't load.
 let MapView: typeof import('react-native-maps').default | null = null;
 let Marker: typeof import('react-native-maps').Marker | null = null;
 let mapsAvailable = true;

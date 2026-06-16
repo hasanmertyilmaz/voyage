@@ -1,21 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { cacheEntries, readCachedEntries } from '@/services/cache';
-import {
-  createEntry,
-  deleteEntry,
-  fetchEntries,
-  updateEntry,
-} from '@/services/entriesService';
+import { createEntry, deleteEntry, fetchEntries, updateEntry } from '@/services/entriesService';
 import type { Entry, EntryDraft, RequestStatus } from '@/types/entry';
 
 export interface EntriesState {
   items: Entry[];
   status: RequestStatus;
   error: string | null;
-  /** Separate status for create/update/delete so the list spinner is independent. */
+
   mutationStatus: RequestStatus;
-  /** True when the currently shown items came from the offline cache. */
+
   fromCache: boolean;
 }
 
@@ -32,12 +27,10 @@ type SliceState = { entries: EntriesState };
 const toMessage = (error: unknown, fallback: string): string =>
   error instanceof Error ? error.message : fallback;
 
-/** Instantly show cached entries on launch before the network fetch resolves. */
 export const hydrateFromCache = createAsyncThunk('entries/hydrateFromCache', (userId: string) =>
   readCachedEntries(userId),
 );
 
-/** Fetch from Supabase; on failure fall back to cached data (offline support). */
 export const loadEntries = createAsyncThunk<
   { entries: Entry[]; fromCache: boolean },
   string,

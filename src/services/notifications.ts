@@ -1,7 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-// Show reminders as a banner while the app is foregrounded.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -29,11 +28,10 @@ async function ensureAndroidChannel(): Promise<void> {
   });
 }
 
-/**
- * Schedule a local "time to journal" reminder a number of days from now.
- * Returns the notification id, or null if permission was not granted.
- */
-export async function scheduleTripReminder(daysFromNow: number, message: string): Promise<string | null> {
+export async function scheduleTripReminder(
+  daysFromNow: number,
+  message: string,
+): Promise<string | null> {
   const granted = await ensureNotificationPermission();
   if (!granted) return null;
   await ensureAndroidChannel();

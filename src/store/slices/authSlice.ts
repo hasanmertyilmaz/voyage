@@ -9,11 +9,10 @@ export interface AuthUser {
 }
 
 export interface AuthState {
-  /** `initializing` while the persisted session is being restored on launch. */
   status: 'initializing' | 'idle' | 'loading';
   user: AuthUser | null;
   error: string | null;
-  /** True after sign-up when the account still needs email confirmation. */
+
   pendingConfirmation: boolean;
 }
 
@@ -66,7 +65,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    /** Synced from supabase.auth.onAuthStateChange (token refresh, sign-out). */
     sessionChanged(state, action: PayloadAction<AuthUser | null>) {
       state.user = action.payload;
       if (state.status === 'initializing') state.status = 'idle';

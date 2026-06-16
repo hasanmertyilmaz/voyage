@@ -1,12 +1,9 @@
-/** Helpers for turning Open-Meteo WMO weather codes into UI-friendly values. */
-
 export interface WeatherInfo {
   code: number;
   label: string;
   emoji: string;
 }
 
-// WMO weather interpretation codes used by Open-Meteo.
 const WEATHER_MAP: Record<number, { label: string; emoji: string }> = {
   0: { label: 'Clear sky', emoji: '☀️' },
   1: { label: 'Mainly clear', emoji: '🌤️' },
@@ -40,10 +37,7 @@ export function celsiusToFahrenheit(celsius: number): number {
   return (celsius * 9) / 5 + 32;
 }
 
-export function formatTemperature(
-  celsius: number,
-  unit: 'metric' | 'imperial' = 'metric',
-): string {
+export function formatTemperature(celsius: number, unit: 'metric' | 'imperial' = 'metric'): string {
   if (Number.isNaN(celsius)) return '—';
   if (unit === 'imperial') return `${Math.round(celsiusToFahrenheit(celsius))}°F`;
   return `${Math.round(celsius)}°C`;

@@ -9,7 +9,12 @@ import { TextField } from '@/components/ui/TextField';
 import { isSupabaseConfigured } from '@/constants/config';
 import { Spacing } from '@/constants/theme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearAuthError, selectAuthError, selectAuthStatus, signIn } from '@/store/slices/authSlice';
+import {
+  clearAuthError,
+  selectAuthError,
+  selectAuthStatus,
+  signIn,
+} from '@/store/slices/authSlice';
 import { isValidEmail } from '@/utils/validation';
 
 export default function LoginScreen() {

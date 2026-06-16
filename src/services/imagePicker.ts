@@ -13,7 +13,6 @@ const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
   quality: 0.7,
 };
 
-/** Pick an existing photo from the device gallery. */
 export async function pickFromGallery(): Promise<PickResult> {
   const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!permission.granted) {
@@ -24,7 +23,6 @@ export async function pickFromGallery(): Promise<PickResult> {
   return { status: 'granted', uri: result.assets[0].uri };
 }
 
-/** Capture a new photo with the camera. */
 export async function takePhoto(): Promise<PickResult> {
   const permission = await ImagePicker.requestCameraPermissionsAsync();
   if (!permission.granted) {
