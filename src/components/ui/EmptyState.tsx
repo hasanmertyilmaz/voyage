@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 import { Button } from './Button';
 import { Text } from './Text';
@@ -13,16 +14,13 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export function EmptyState({
-  emoji = '🗺️',
-  title,
-  message,
-  actionLabel,
-  onAction,
-}: EmptyStateProps) {
+export function EmptyState({ emoji = '🗺️', title, message, actionLabel, onAction }: EmptyStateProps) {
+  const theme = useTheme();
   return (
     <View style={styles.container}>
-      <Text style={styles.emoji}>{emoji}</Text>
+      <View style={[styles.badge, { backgroundColor: theme.surfaceAlt }]}>
+        <Text style={styles.emoji}>{emoji}</Text>
+      </View>
       <Text variant="subtitle" style={styles.center}>
         {title}
       </Text>
@@ -48,7 +46,8 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
     padding: Spacing.xl,
   },
-  emoji: { fontSize: 56 },
+  badge: { width: 104, height: 104, borderRadius: 52, alignItems: 'center', justifyContent: 'center' },
+  emoji: { fontSize: 52 },
   center: { textAlign: 'center' },
   action: { marginTop: Spacing.sm },
 });

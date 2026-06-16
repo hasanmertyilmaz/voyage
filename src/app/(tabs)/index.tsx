@@ -1,8 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect } from 'react';
 import { FlatList, Platform, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
+import { GradientHeader } from '@/components/GradientHeader';
 import { SwipeableEntryCard } from '@/components/SwipeableEntryCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -10,6 +13,7 @@ import { Loading } from '@/components/ui/Loading';
 import { Text } from '@/components/ui/Text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useThemeContext } from '@/theme/theme-context';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectAuthUser } from '@/store/slices/authSlice';
 import {
@@ -28,6 +32,7 @@ export default function JournalScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const theme = useTheme();
+  const { gradients } = useThemeContext();
 
   const user = useAppSelector(selectAuthUser);
   const entries = useAppSelector(selectEntries);
@@ -55,11 +60,15 @@ export default function JournalScreen() {
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: Entry }) => (
-      <SwipeableEntryCard entry={item} units={units} onPress={openEntry} onDelete={handleDelete} />
+    ({ item, index }: { item: Entry; index: number }) => (
+      <Animated.View entering={FadeInDown.duration(320).delay(Math.min(index, 8) * 45)}>
+        <SwipeableEntryCard entry={item} units={units} onPress={openEntry} onDelete={handleDelete} />
+      </Animated.View>
     ),
     [units, openEntry, handleDelete],
   );
+
+  const tripLabel = `${entries.length} ${entries.length === 1 ? 'trip' : 'trips'} logged`;
 
   if (status === 'loading' && entries.length === 0) {
     return <Loading label="Loading your trips…" />;
@@ -70,6 +79,7 @@ export default function JournalScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <GradientHeader title="Voyage" subtitle={tripLabel} />
       {fromCache ? (
         <Text variant="caption" color="textMuted" style={styles.cacheNote}>
           Showing saved trips (offline)
@@ -106,12 +116,16 @@ export default function JournalScreen() {
         accessibilityRole="button"
         accessibilityLabel="Add a trip"
         onPress={() => router.push('/modal/new')}
-        style={({ pressed }) => [
-          styles.fab,
-          { backgroundColor: theme.primary, transform: [{ scale: pressed ? 0.94 : 1 }] },
-        ]}
+        style={({ pressed }) => [styles.fab, { transform: [{ scale: pressed ? 0.94 : 1 }] }]}
       >
-        <Ionicons name="add" size={28} color={theme.onPrimary} />
+        <LinearGradient
+          colors={gradients.hero}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.fabFill}
+        >
+          <Ionicons name="add" size={30} color="#FFFFFF" />
+        </LinearGradient>
       </Pressable>
     </View>
   );
@@ -120,22 +134,25 @@ export default function JournalScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   cacheNote: { textAlign: 'center', paddingVertical: Spacing.xs },
-  listContent: { padding: Spacing.lg, paddingBottom: 96 },
+  listContent: { padding: Spacing.lg, paddingBottom: 110 },
   emptyContent: { flexGrow: 1, padding: Spacing.lg },
   separator: { height: Spacing.lg },
   fab: {
     position: 'absolute',
     right: Spacing.lg,
     bottom: Spacing.xl,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    borderRadius: 30,
+    shadowColor: '#0D9488',
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 8,
+  },
+  fabFill: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
   },
 });

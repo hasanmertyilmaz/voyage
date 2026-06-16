@@ -17,3 +17,8 @@ jest.mock('expo-image', () => {
   const { View } = require('react-native');
   return { Image: View };
 });
+
+jest.mock('expo-linear-gradient', () => {
+  const { View } = require('react-native');
+  return { LinearGradient: View };
+});

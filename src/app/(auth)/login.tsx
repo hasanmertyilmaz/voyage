@@ -1,24 +1,22 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { AuthShell } from '@/components/AuthShell';
 import { Button } from '@/components/ui/Button';
-import { Screen } from '@/components/ui/Screen';
 import { Text } from '@/components/ui/Text';
 import { TextField } from '@/components/ui/TextField';
 import { isSupabaseConfigured } from '@/constants/config';
 import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-  clearAuthError,
-  selectAuthError,
-  selectAuthStatus,
-  signIn,
-} from '@/store/slices/authSlice';
+import { clearAuthError, selectAuthError, selectAuthStatus, signIn } from '@/store/slices/authSlice';
 import { isValidEmail } from '@/utils/validation';
 
 export default function LoginScreen() {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const status = useAppSelector(selectAuthStatus);
   const serverError = useAppSelector(selectAuthError);
 
@@ -36,13 +34,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <Screen scroll>
-      <View style={styles.header}>
-        <Text style={styles.logo}>🧭</Text>
-        <Text variant="display">Voyage</Text>
-        <Text variant="bodyMuted">Your trips, captured.</Text>
-      </View>
-
+    <AuthShell title="Voyage" subtitle="Your trips, captured.">
       {!isSupabaseConfigured ? (
         <Text variant="caption" color="danger">
           Supabase isn&apos;t configured yet. Add EXPO_PUBLIC_SUPABASE_URL and
@@ -58,6 +50,7 @@ export default function LoginScreen() {
         autoComplete="email"
         keyboardType="email-address"
         placeholder="you@example.com"
+        leftIcon={<Ionicons name="mail-outline" size={18} color={theme.textMuted} />}
         error={emailError}
       />
       <TextField
@@ -66,6 +59,7 @@ export default function LoginScreen() {
         onChangeText={setPassword}
         secureTextEntry
         placeholder="••••••"
+        leftIcon={<Ionicons name="lock-closed-outline" size={18} color={theme.textMuted} />}
       />
 
       {serverError ? (
@@ -82,12 +76,10 @@ export default function LoginScreen() {
           <Text color="primary">Create one</Text>
         </Link>
       </View>
-    </Screen>
+    </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { alignItems: 'center', gap: Spacing.xs, marginVertical: Spacing.xl },
-  logo: { fontSize: 56 },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.sm },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.xs },
 });

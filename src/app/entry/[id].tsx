@@ -1,9 +1,10 @@
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
-import { Chip } from '@/components/ui/Chip';
+import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Text } from '@/components/ui/Text';
 import { Radius, Spacing } from '@/constants/theme';
@@ -12,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectAuthUser } from '@/store/slices/authSlice';
 import { removeEntry, selectEntryById } from '@/store/slices/entriesSlice';
 import { selectUnits } from '@/store/slices/settingsSlice';
+import { useThemeContext } from '@/theme/theme-context';
 import { formatDate } from '@/utils/formatDate';
 import { formatCoords } from '@/utils/geo';
 import { formatTemperature, weatherCodeToInfo } from '@/utils/weather';
@@ -21,6 +23,7 @@ export default function EntryDetailScreen() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const theme = useTheme();
+  const { gradients } = useThemeContext();
   const user = useAppSelector(selectAuthUser);
   const units = useAppSelector(selectUnits);
   const entry = useAppSelector(selectEntryById(id));
@@ -28,6 +31,8 @@ export default function EntryDetailScreen() {
   if (!entry) {
     return <EmptyState emoji="🔍" title="Trip not found" message="It may have been deleted." />;
   }
+
+  const place = entry.placeName ?? formatCoords(entry.latitude, entry.longitude);
 
   const confirmDelete = () => {
     Alert.alert('Delete trip', `Delete "${entry.title}"? This can't be undone.`, [
@@ -48,56 +53,66 @@ export default function EntryDetailScreen() {
     <ScrollView
       style={{ backgroundColor: theme.background }}
       contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
     >
       <Stack.Screen options={{ title: entry.title }} />
 
-      {entry.photoUrl ? (
-        <Image
-          source={{ uri: entry.photoUrl }}
-          style={styles.photo}
-          contentFit="cover"
-          transition={200}
-        />
-      ) : null}
-
-      <Text variant="display">{entry.title}</Text>
-
-      <View style={styles.metaRow}>
-        <Chip label={formatDate(entry.tripDate)} />
-        {entry.weather ? (
-          <Chip
-            tone="primary"
-            label={`${weatherCodeToInfo(entry.weather.weatherCode).emoji} ${formatTemperature(
-              entry.weather.temperatureC,
-              units,
-            )} · ${weatherCodeToInfo(entry.weather.weatherCode).label}`}
+      <View style={styles.hero}>
+        {entry.photoUrl ? (
+          <Image
+            source={{ uri: entry.photoUrl }}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            transition={200}
           />
+        ) : (
+          <LinearGradient
+            colors={gradients.placeholder}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
+        <LinearGradient colors={gradients.cardOverlay} style={StyleSheet.absoluteFill} />
+        {!entry.photoUrl ? <Text style={styles.ghost}>🧭</Text> : null}
+        {entry.weather ? (
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>
+              {weatherCodeToInfo(entry.weather.weatherCode).emoji}{' '}
+              {formatTemperature(entry.weather.temperatureC, units)} ·{' '}
+              {weatherCodeToInfo(entry.weather.weatherCode).label}
+            </Text>
+          </View>
         ) : null}
+        <View style={styles.heroOverlay}>
+          <Text style={styles.title}>{entry.title}</Text>
+          <Text style={styles.place}>📍 {place}</Text>
+          <Text style={styles.date}>{formatDate(entry.tripDate)}</Text>
+        </View>
       </View>
 
-      {entry.placeName || entry.latitude != null ? (
-        <View style={styles.section}>
-          <Text variant="label" color="textSecondary">
-            Location
-          </Text>
-          <Text variant="body">
-            📍 {entry.placeName ?? formatCoords(entry.latitude, entry.longitude)}
-          </Text>
-          {entry.latitude != null ? (
-            <Text variant="caption" color="textMuted">
-              {formatCoords(entry.latitude, entry.longitude)}
+      {entry.notes ? (
+        <Card>
+          <View style={styles.cardInner}>
+            <Text variant="label" color="textSecondary">
+              Notes
             </Text>
-          ) : null}
-        </View>
+            <Text variant="body" style={styles.notes}>
+              {entry.notes}
+            </Text>
+          </View>
+        </Card>
       ) : null}
 
-      {entry.notes ? (
-        <View style={styles.section}>
-          <Text variant="label" color="textSecondary">
-            Notes
-          </Text>
-          <Text variant="body">{entry.notes}</Text>
-        </View>
+      {entry.latitude != null ? (
+        <Card>
+          <View style={styles.cardInner}>
+            <Text variant="label" color="textSecondary">
+              Coordinates
+            </Text>
+            <Text variant="body">{formatCoords(entry.latitude, entry.longitude)}</Text>
+          </View>
+        </Card>
       ) : null}
 
       <View style={styles.actions}>
@@ -117,10 +132,31 @@ export default function EntryDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { padding: Spacing.lg, gap: Spacing.md, paddingBottom: Spacing.xxxl },
-  photo: { width: '100%', height: 240, borderRadius: Radius.lg },
-  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },
-  section: { gap: Spacing.xs },
-  actions: { flexDirection: 'row', gap: Spacing.md, marginTop: Spacing.md },
+  content: { padding: Spacing.lg, gap: Spacing.lg, paddingBottom: Spacing.xxxl },
+  hero: { height: 300, borderRadius: Radius.xl, overflow: 'hidden', justifyContent: 'flex-end' },
+  ghost: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 70,
+    fontSize: 80,
+    color: 'rgba(255,255,255,0.5)',
+  },
+  pill: {
+    position: 'absolute',
+    top: Spacing.md,
+    right: Spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 6,
+    borderRadius: Radius.pill,
+  },
+  pillText: { color: '#0F766E', fontWeight: '800', fontSize: 13 },
+  heroOverlay: { padding: Spacing.lg, gap: 2 },
+  title: { color: '#FFFFFF', fontSize: 30, fontWeight: '800' },
+  place: { color: 'rgba(255,255,255,0.92)', fontSize: 14, fontWeight: '600' },
+  date: { color: 'rgba(255,255,255,0.78)', fontSize: 13, marginTop: 2 },
+  cardInner: { gap: Spacing.xs },
+  notes: { lineHeight: 22 },
+  actions: { flexDirection: 'row', gap: Spacing.md, marginTop: Spacing.xs },
   flex: { flex: 1 },
 });

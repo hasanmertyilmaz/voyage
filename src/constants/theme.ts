@@ -44,6 +44,27 @@ export type ThemeColor = keyof typeof Colors.light;
 
 export type ThemeColors = Record<ThemeColor, string>;
 
+type Gradient = readonly [string, string, ...string[]];
+
+export const Gradients = {
+  light: {
+    hero: ['#0EA5A4', '#0F766E'],
+    placeholder: ['#99F6E4', '#2DD4BF'],
+    cardOverlay: ['transparent', 'rgba(2,6,23,0.05)', 'rgba(2,6,23,0.82)'],
+  },
+  dark: {
+    hero: ['#115E59', '#0B3B38'],
+    placeholder: ['#134E4A', '#0F766E'],
+    cardOverlay: ['transparent', 'rgba(2,6,23,0.10)', 'rgba(2,6,23,0.90)'],
+  },
+} as const;
+
+export type GradientSet = {
+  hero: Gradient;
+  placeholder: Gradient;
+  cardOverlay: Gradient;
+};
+
 export const Spacing = {
   xs: 4,
   sm: 8,

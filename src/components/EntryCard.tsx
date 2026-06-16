@@ -1,16 +1,17 @@
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
 import type { Units } from '@/store/slices/settingsSlice';
+import { useThemeContext } from '@/theme/theme-context';
 import type { Entry } from '@/types/entry';
 import { formatDate } from '@/utils/formatDate';
 import { formatCoords } from '@/utils/geo';
+import { formatTemperature, weatherCodeToInfo } from '@/utils/weather';
 
 import { Text } from './ui/Text';
-import { WeatherBadge } from './WeatherBadge';
 
 export interface EntryCardProps {
   entry: Entry;
@@ -18,47 +19,60 @@ export interface EntryCardProps {
   onPress?: (entry: Entry) => void;
 }
 
+/**
+ * Travel-style list card: the photo (or a gradient placeholder) fills the card,
+ * a dark gradient keeps the white title/place legible, and the weather sits in a
+ * floating pill. Memoized so list scrolling skips unchanged rows (criterion 9).
+ */
 function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
-  const theme = useTheme();
+  const { gradients } = useThemeContext();
+  const place = entry.placeName ?? formatCoords(entry.latitude, entry.longitude);
+
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`Open ${entry.title}`}
       onPress={() => onPress?.(entry)}
-      style={({ pressed }) => [
-        styles.card,
-        {
-          backgroundColor: theme.surface,
-          borderColor: theme.border,
-          opacity: pressed ? 0.92 : 1,
-          transform: [{ scale: pressed ? 0.99 : 1 }],
-        },
-      ]}
+      style={({ pressed }) => [styles.shadow, { transform: [{ scale: pressed ? 0.985 : 1 }] }]}
     >
-      {entry.photoUrl ? (
-        <Image
-          source={{ uri: entry.photoUrl }}
-          style={styles.image}
-          contentFit="cover"
-          transition={200}
-        />
-      ) : (
-        <View style={[styles.image, styles.imageFallback, { backgroundColor: theme.surfaceAlt }]}>
-          <Text style={styles.fallbackEmoji}>📷</Text>
-        </View>
-      )}
-      <View style={styles.body}>
-        <Text variant="subtitle" numberOfLines={1}>
-          {entry.title}
-        </Text>
-        <Text variant="caption" color="textSecondary" numberOfLines={1}>
-          📍 {entry.placeName ?? formatCoords(entry.latitude, entry.longitude)}
-        </Text>
-        <View style={styles.footer}>
-          <Text variant="caption" color="textMuted">
-            {formatDate(entry.tripDate)}
+      <View style={styles.card}>
+        {entry.photoUrl ? (
+          <Image
+            source={{ uri: entry.photoUrl }}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            transition={200}
+          />
+        ) : (
+          <LinearGradient
+            colors={gradients.placeholder}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        )}
+
+        <LinearGradient colors={gradients.cardOverlay} style={StyleSheet.absoluteFill} />
+
+        {!entry.photoUrl ? <Text style={styles.ghost}>🧭</Text> : null}
+
+        {entry.weather ? (
+          <View style={styles.pill}>
+            <Text style={styles.pillText}>
+              {weatherCodeToInfo(entry.weather.weatherCode).emoji}{' '}
+              {formatTemperature(entry.weather.temperatureC, units)}
+            </Text>
+          </View>
+        ) : null}
+
+        <View style={styles.overlay}>
+          <Text style={styles.title} numberOfLines={1}>
+            {entry.title}
           </Text>
-          {entry.weather ? <WeatherBadge weather={entry.weather} units={units} compact /> : null}
+          <Text style={styles.place} numberOfLines={1}>
+            📍 {place}
+          </Text>
+          <Text style={styles.date}>{formatDate(entry.tripDate)}</Text>
         </View>
       </View>
     </Pressable>
@@ -68,19 +82,34 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
 export const EntryCard = memo(EntryCardComponent);
 
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: Radius.lg,
-    borderWidth: 1,
-    overflow: 'hidden',
+  shadow: {
+    borderRadius: Radius.xl,
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 8,
   },
-  image: { width: '100%', height: 170 },
-  imageFallback: { alignItems: 'center', justifyContent: 'center' },
-  fallbackEmoji: { fontSize: 40 },
-  body: { padding: Spacing.lg, gap: Spacing.xs },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: Spacing.xs,
+  card: { height: 220, borderRadius: Radius.xl, overflow: 'hidden', justifyContent: 'flex-end' },
+  ghost: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 44,
+    fontSize: 64,
+    color: 'rgba(255,255,255,0.55)',
   },
+  pill: {
+    position: 'absolute',
+    top: Spacing.md,
+    right: Spacing.md,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 6,
+    borderRadius: Radius.pill,
+  },
+  pillText: { color: '#0F766E', fontWeight: '800', fontSize: 13 },
+  overlay: { padding: Spacing.lg, gap: 2 },
+  title: { color: '#FFFFFF', fontSize: 22, fontWeight: '800' },
+  place: { color: 'rgba(255,255,255,0.92)', fontSize: 13, fontWeight: '600' },
+  date: { color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 2 },
 });

@@ -1,12 +1,14 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { AuthShell } from '@/components/AuthShell';
 import { Button } from '@/components/ui/Button';
-import { Screen } from '@/components/ui/Screen';
 import { Text } from '@/components/ui/Text';
 import { TextField } from '@/components/ui/TextField';
 import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   clearAuthError,
@@ -19,6 +21,7 @@ import { isValidEmail, validatePassword } from '@/utils/validation';
 
 export default function RegisterScreen() {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const status = useAppSelector(selectAuthStatus);
   const serverError = useAppSelector(selectAuthError);
   const pendingConfirmation = useAppSelector(selectPendingConfirmation);
@@ -50,12 +53,7 @@ export default function RegisterScreen() {
   };
 
   return (
-    <Screen scroll>
-      <View style={styles.header}>
-        <Text variant="display">Create account</Text>
-        <Text variant="bodyMuted">Start your travel journal.</Text>
-      </View>
-
+    <AuthShell title="Voyage" subtitle="Start your travel journal.">
       <TextField
         label="Email"
         value={email}
@@ -64,6 +62,7 @@ export default function RegisterScreen() {
         autoComplete="email"
         keyboardType="email-address"
         placeholder="you@example.com"
+        leftIcon={<Ionicons name="mail-outline" size={18} color={theme.textMuted} />}
         error={emailError}
       />
       <TextField
@@ -72,6 +71,7 @@ export default function RegisterScreen() {
         onChangeText={setPassword}
         secureTextEntry
         placeholder="At least 6 characters"
+        leftIcon={<Ionicons name="lock-closed-outline" size={18} color={theme.textMuted} />}
         error={passwordError}
       />
       <TextField
@@ -80,6 +80,7 @@ export default function RegisterScreen() {
         onChangeText={setConfirm}
         secureTextEntry
         placeholder="Repeat password"
+        leftIcon={<Ionicons name="shield-checkmark-outline" size={18} color={theme.textMuted} />}
       />
 
       {serverError ? (
@@ -101,11 +102,10 @@ export default function RegisterScreen() {
           <Text color="primary">Sign in</Text>
         </Link>
       </View>
-    </Screen>
+    </AuthShell>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { alignItems: 'center', gap: Spacing.xs, marginVertical: Spacing.xl },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.sm },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: Spacing.xs },
 });
