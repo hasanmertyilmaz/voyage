@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo } from 'react';
@@ -56,7 +57,7 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
 
         {!entry.photoUrl ? (
           <View style={styles.ghostWrap}>
-            <Text style={styles.ghost}>🧭</Text>
+            <Ionicons name="airplane-outline" size={58} color="rgba(255,255,255,0.45)" />
           </View>
         ) : null}
 
@@ -104,7 +105,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ghost: { fontSize: 60, color: 'rgba(255,255,255,0.6)' },
   pill: {
     position: 'absolute',
     top: Spacing.md,

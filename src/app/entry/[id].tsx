@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
@@ -74,7 +75,7 @@ export default function EntryDetailScreen() {
         <LinearGradient colors={gradients.cardOverlay} style={StyleSheet.absoluteFill} />
         {!entry.photoUrl ? (
           <View style={styles.ghostWrap}>
-            <Text style={styles.ghost}>🧭</Text>
+            <Ionicons name="airplane-outline" size={84} color="rgba(255,255,255,0.45)" />
           </View>
         ) : null}
         {entry.weather ? (
@@ -145,7 +146,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ghost: { fontSize: 80, color: 'rgba(255,255,255,0.5)' },
   pill: {
     position: 'absolute',
     top: Spacing.md,
