@@ -58,7 +58,7 @@ export default function MapWebScreen() {
         entry.longitude as number,
       ]);
 
-      map = L.map(containerRef.current).setView(points[0], 5);
+      map = L.map(containerRef.current).setView(points[0], 4);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         attribution: '© OpenStreetMap contributors © CARTO',
         subdomains: 'abcd',
@@ -71,7 +71,7 @@ export default function MapWebScreen() {
           .bindPopup(`<strong>${entry.title}</strong><br/>${entry.placeName ?? ''}`);
       });
 
-      if (points.length > 1) map.fitBounds(points, { padding: [48, 48] });
+      if (points.length > 1) map.fitBounds(points, { padding: [60, 60], maxZoom: 6 });
       setTimeout(() => map?.invalidateSize(), 120);
     });
 
