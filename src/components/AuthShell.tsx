@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { type ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
@@ -34,7 +35,7 @@ export function AuthShell({ title, subtitle, children }: AuthShellProps) {
           >
             <View style={styles.hero}>
               <View style={styles.logoCircle}>
-                <Text style={styles.logo}>🧭</Text>
+                <Ionicons name="compass" size={46} color="#FFFFFF" />
               </View>
               <Text style={styles.brand}>{title}</Text>
               <Text style={styles.tagline}>{subtitle}</Text>
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.3)',
   },
-  logo: { fontSize: 44 },
   brand: { color: '#FFFFFF', fontSize: 34, fontWeight: '800', letterSpacing: 0.5 },
   tagline: { color: 'rgba(255,255,255,0.85)', fontSize: 15 },
   card: {
