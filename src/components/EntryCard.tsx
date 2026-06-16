@@ -7,6 +7,7 @@ import { useTheme } from '@/hooks/use-theme';
 import type { Units } from '@/store/slices/settingsSlice';
 import type { Entry } from '@/types/entry';
 import { formatDate } from '@/utils/formatDate';
+import { formatCoords } from '@/utils/geo';
 
 import { Text } from './ui/Text';
 import { WeatherBadge } from './WeatherBadge';
@@ -51,7 +52,7 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
           {entry.title}
         </Text>
         <Text variant="caption" color="textSecondary" numberOfLines={1}>
-          📍 {entry.placeName ?? 'No location'}
+          📍 {entry.placeName ?? formatCoords(entry.latitude, entry.longitude)}
         </Text>
         <View style={styles.footer}>
           <Text variant="caption" color="textMuted">
