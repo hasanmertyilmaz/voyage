@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { GradientHeader } from '@/components/GradientHeader';
@@ -27,12 +27,28 @@ export default function MapScreen() {
   const entries = useAppSelector(selectEntries);
   const theme = useTheme();
   const router = useRouter();
-  const mapRef = useRef<any>(null);
 
   const located = useMemo(
     () => entries.filter((entry) => entry.latitude != null && entry.longitude != null),
     [entries],
   );
+
+  // A region that comfortably frames every trip pin (deterministic, no ref).
+  const region = useMemo(() => {
+    if (located.length === 0) return null;
+    const lats = located.map((entry) => entry.latitude as number);
+    const lngs = located.map((entry) => entry.longitude as number);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+    const minLng = Math.min(...lngs);
+    const maxLng = Math.max(...lngs);
+    return {
+      latitude: (minLat + maxLat) / 2,
+      longitude: (minLng + maxLng) / 2,
+      latitudeDelta: Math.max((maxLat - minLat) * 1.6, 6),
+      longitudeDelta: Math.max((maxLng - minLng) * 1.6, 6),
+    };
+  }, [located]);
 
   const renderContent = () => {
     if (!mapsAvailable || !MapView || !Marker) {
@@ -44,7 +60,7 @@ export default function MapScreen() {
         />
       );
     }
-    if (located.length === 0) {
+    if (located.length === 0 || !region) {
       return (
         <EmptyState
           emoji="📍"
@@ -56,27 +72,7 @@ export default function MapScreen() {
     const MapComponent = MapView;
     const MarkerComponent = Marker;
     return (
-      <MapComponent
-        ref={mapRef}
-        style={StyleSheet.absoluteFill}
-        initialRegion={{
-          latitude: located[0].latitude as number,
-          longitude: located[0].longitude as number,
-          latitudeDelta: 40,
-          longitudeDelta: 40,
-        }}
-        onMapReady={() => {
-          if (located.length > 1) {
-            mapRef.current?.fitToCoordinates(
-              located.map((entry) => ({
-                latitude: entry.latitude as number,
-                longitude: entry.longitude as number,
-              })),
-              { edgePadding: { top: 80, right: 80, bottom: 80, left: 80 }, animated: false },
-            );
-          }
-        }}
-      >
+      <MapComponent style={StyleSheet.absoluteFill} initialRegion={region}>
         {located.map((entry) => (
           <MarkerComponent
             key={entry.id}
