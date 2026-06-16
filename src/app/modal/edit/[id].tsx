@@ -31,7 +31,8 @@ export default function EditEntryScreen() {
     if (!user) return;
     const result = await dispatch(editEntry({ userId: user.id, id: entry.id, draft }));
     if (editEntry.fulfilled.match(result)) {
-      router.back();
+      if (router.canGoBack()) router.back();
+      else router.replace('/(tabs)');
     } else {
       Alert.alert('Could not update', (result.payload as string) ?? 'Please try again.');
     }

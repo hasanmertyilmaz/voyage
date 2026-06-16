@@ -20,7 +20,8 @@ export default function NewEntryScreen() {
     if (!user) return;
     const result = await dispatch(addEntry({ userId: user.id, draft }));
     if (addEntry.fulfilled.match(result)) {
-      router.back();
+      if (router.canGoBack()) router.back();
+      else router.replace('/(tabs)');
     } else {
       Alert.alert('Could not save', (result.payload as string) ?? 'Please try again.');
     }

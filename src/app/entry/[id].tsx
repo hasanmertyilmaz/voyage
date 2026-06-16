@@ -43,7 +43,8 @@ export default function EntryDetailScreen() {
         onPress: async () => {
           if (!user) return;
           await dispatch(removeEntry({ userId: user.id, entry }));
-          router.back();
+          if (router.canGoBack()) router.back();
+          else router.replace('/(tabs)');
         },
       },
     ]);
