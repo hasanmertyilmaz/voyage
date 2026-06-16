@@ -13,10 +13,11 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
   restoreSession,
   selectAuthStatus,
+  selectAuthUser,
   selectIsAuthenticated,
   sessionChanged,
 } from '@/store/slices/authSlice';
-import { clearEntries } from '@/store/slices/entriesSlice';
+import { clearEntries, hydrateFromCache, loadEntries } from '@/store/slices/entriesSlice';
 import { loadSettings } from '@/store/slices/settingsSlice';
 import { ThemeProvider, useThemeContext } from '@/theme/theme-context';
 
@@ -24,6 +25,7 @@ function RootNavigator() {
   const dispatch = useAppDispatch();
   const status = useAppSelector(selectAuthStatus);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const user = useAppSelector(selectAuthUser);
   const segments = useSegments();
   const router = useRouter();
   const { isDark } = useThemeContext();
@@ -41,6 +43,14 @@ function RootNavigator() {
     });
     return () => data.subscription.unsubscribe();
   }, [dispatch]);
+
+  // Load the user's trips as soon as they're authenticated so every tab (and
+  // deep links) has data — not only after the Journal screen mounts.
+  useEffect(() => {
+    if (!user) return;
+    dispatch(hydrateFromCache(user.id));
+    dispatch(loadEntries(user.id));
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (status === 'initializing') return;
