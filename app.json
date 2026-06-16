@@ -1,0 +1,75 @@
+{
+  "expo": {
+    "name": "Voyage",
+    "slug": "voyage",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "voyage",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hasanyilmaz.voyage",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Voyage uses your location to tag where each trip happened and to fetch local weather.",
+        "NSCameraUsageDescription": "Voyage uses the camera to add photos to your trips.",
+        "NSPhotoLibraryUsageDescription": "Voyage lets you choose trip photos from your library."
+      }
+    },
+    "android": {
+      "package": "com.hasanyilmaz.voyage",
+      "adaptiveIcon": {
+        "backgroundColor": "#0D9488",
+        "foregroundImage": "./assets/images/adaptive-foreground.png"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_MEDIA_IMAGES"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "@react-native-community/datetimepicker",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0D9488"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Voyage uses your location to tag where each trip happened and to fetch local weather."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Voyage lets you choose trip photos from your library.",
+          "cameraPermission": "Voyage uses the camera to add photos to your trips."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0D9488"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}
