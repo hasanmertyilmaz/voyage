@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -14,6 +14,7 @@ import { selectAuthUser } from '@/store/slices/authSlice';
 import { removeEntry, selectEntryById } from '@/store/slices/entriesSlice';
 import { selectUnits } from '@/store/slices/settingsSlice';
 import { useThemeContext } from '@/theme/theme-context';
+import { confirmAction } from '@/utils/confirm';
 import { formatDate } from '@/utils/formatDate';
 import { formatCoords } from '@/utils/geo';
 import { formatTemperature, weatherCodeToInfo } from '@/utils/weather';
@@ -34,20 +35,16 @@ export default function EntryDetailScreen() {
 
   const place = entry.placeName ?? formatCoords(entry.latitude, entry.longitude);
 
-  const confirmDelete = () => {
-    Alert.alert('Delete trip', `Delete "${entry.title}"? This can't be undone.`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          if (!user) return;
-          await dispatch(removeEntry({ userId: user.id, entry }));
-          if (router.canGoBack()) router.back();
-          else router.replace('/(tabs)');
-        },
-      },
-    ]);
+  const confirmDelete = async () => {
+    const confirmed = await confirmAction(
+      'Delete trip',
+      `Delete "${entry.title}"? This can't be undone.`,
+      'Delete',
+    );
+    if (!confirmed || !user) return;
+    await dispatch(removeEntry({ userId: user.id, entry }));
+    if (router.canGoBack()) router.back();
+    else router.replace('/(tabs)');
   };
 
   return (
