@@ -1,3 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
+
 export interface WeatherInfo {
   code: number;
   label: string;
@@ -31,6 +33,20 @@ const WEATHER_MAP: Record<number, { label: string; emoji: string }> = {
 export function weatherCodeToInfo(code: number): WeatherInfo {
   const match = WEATHER_MAP[code] ?? { label: 'Unknown', emoji: '🌍' };
   return { code, ...match };
+}
+
+export type WeatherIconName = keyof typeof Ionicons.glyphMap;
+
+// Map Open-Meteo WMO codes to Ionicons so the weather UI never relies on emoji glyphs.
+export function weatherCodeToIcon(code: number): WeatherIconName {
+  if (code === 0) return 'sunny';
+  if (code <= 2) return 'partly-sunny';
+  if (code <= 48) return 'cloudy';
+  if (code <= 67) return 'rainy';
+  if (code <= 77) return 'snow';
+  if (code <= 82) return 'rainy';
+  if (code <= 86) return 'snow';
+  return 'thunderstorm';
 }
 
 export function celsiusToFahrenheit(celsius: number): number {

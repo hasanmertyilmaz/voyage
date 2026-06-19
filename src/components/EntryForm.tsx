@@ -15,11 +15,10 @@ import type { EntryDraft } from '@/types/entry';
 import { formatDate, toISODate, todayISODate } from '@/utils/formatDate';
 import { formatCoords } from '@/utils/geo';
 import { validateEntryDraft } from '@/utils/validation';
-import { formatTemperature, weatherCodeToInfo } from '@/utils/weather';
+import { formatTemperature, weatherCodeToIcon, weatherCodeToInfo } from '@/utils/weather';
 
 import { Button } from './ui/Button';
 import { Card } from './ui/Card';
-import { Chip } from './ui/Chip';
 import { Text } from './ui/Text';
 import { TextField } from './ui/TextField';
 
@@ -211,20 +210,27 @@ export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubm
 
           {hasLocation ? (
             <View style={styles.locationInfo}>
-              <Text variant="body">
-                📍 {draft.placeName ?? formatCoords(draft.latitude, draft.longitude)}
-              </Text>
+              <View style={styles.weatherRow}>
+                <Ionicons name="location" size={16} color={theme.primary} />
+                <Text variant="body" style={styles.flex}>
+                  {draft.placeName ?? formatCoords(draft.latitude, draft.longitude)}
+                </Text>
+              </View>
               <Text variant="caption" color="textMuted">
                 {formatCoords(draft.latitude, draft.longitude)}
               </Text>
               {draft.weather ? (
-                <Chip
-                  tone="primary"
-                  label={`${weatherCodeToInfo(draft.weather.weatherCode).emoji} ${formatTemperature(
-                    draft.weather.temperatureC,
-                    units,
-                  )}`}
-                />
+                <View style={styles.weatherRow}>
+                  <Ionicons
+                    name={weatherCodeToIcon(draft.weather.weatherCode)}
+                    size={16}
+                    color={theme.primary}
+                  />
+                  <Text variant="body" color="primary">
+                    {formatTemperature(draft.weather.temperatureC, units)} ·{' '}
+                    {weatherCodeToInfo(draft.weather.weatherCode).label}
+                  </Text>
+                </View>
               ) : null}
             </View>
           ) : (
@@ -254,7 +260,12 @@ export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubm
                     { borderColor: theme.border, backgroundColor: pressed ? theme.surfaceAlt : theme.surface },
                   ]}
                 >
-                  <Text variant="body">📍 {formatPlaceLabel(place)}</Text>
+                  <View style={styles.resultInner}>
+                    <Ionicons name="location-outline" size={18} color={theme.primary} />
+                    <Text variant="body" style={styles.flex}>
+                      {formatPlaceLabel(place)}
+                    </Text>
+                  </View>
                 </Pressable>
               ))}
             </View>
@@ -290,6 +301,8 @@ const styles = StyleSheet.create({
   },
   cardInner: { gap: Spacing.md },
   locationInfo: { gap: Spacing.xs },
+  weatherRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   results: { gap: Spacing.xs },
   resultRow: { padding: Spacing.md, borderRadius: Radius.md, borderWidth: 1 },
+  resultInner: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
 });

@@ -10,7 +10,7 @@ import { useThemeContext } from '@/theme/theme-context';
 import type { Entry } from '@/types/entry';
 import { formatDate } from '@/utils/formatDate';
 import { formatCoords } from '@/utils/geo';
-import { formatTemperature, weatherCodeToInfo } from '@/utils/weather';
+import { formatTemperature, weatherCodeToIcon } from '@/utils/weather';
 
 import { Text } from './ui/Text';
 
@@ -63,8 +63,12 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
 
         {entry.weather ? (
           <View style={styles.pill}>
+            <Ionicons
+              name={weatherCodeToIcon(entry.weather.weatherCode)}
+              size={14}
+              color="#0F766E"
+            />
             <Text style={styles.pillText}>
-              {weatherCodeToInfo(entry.weather.weatherCode).emoji}{' '}
               {formatTemperature(entry.weather.temperatureC, units)}
             </Text>
           </View>
@@ -74,9 +78,12 @@ function EntryCardComponent({ entry, units, onPress }: EntryCardProps) {
           <Text style={styles.title} numberOfLines={1}>
             {entry.title}
           </Text>
-          <Text style={styles.place} numberOfLines={1}>
-            📍 {place}
-          </Text>
+          <View style={styles.placeRow}>
+            <Ionicons name="location" size={13} color="rgba(255,255,255,0.92)" />
+            <Text style={styles.place} numberOfLines={1}>
+              {place}
+            </Text>
+          </View>
           <Text style={styles.date}>{formatDate(entry.tripDate)}</Text>
         </View>
       </View>
@@ -109,6 +116,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Spacing.md,
     right: Spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     backgroundColor: 'rgba(255,255,255,0.92)',
     paddingHorizontal: Spacing.md,
     paddingVertical: 6,
@@ -117,6 +127,7 @@ const styles = StyleSheet.create({
   pillText: { color: '#0F766E', fontWeight: '800', fontSize: 13 },
   overlay: { padding: Spacing.lg, gap: 2 },
   title: { color: '#FFFFFF', fontSize: 22, fontWeight: '800' },
-  place: { color: 'rgba(255,255,255,0.92)', fontSize: 13, fontWeight: '600' },
+  place: { color: 'rgba(255,255,255,0.92)', fontSize: 13, fontWeight: '600', flex: 1 },
+  placeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   date: { color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 2 },
 });
