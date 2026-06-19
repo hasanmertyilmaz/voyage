@@ -22,7 +22,7 @@ export default function EditEntryScreen() {
   if (!entry) {
     return (
       <Screen>
-        <EmptyState emoji="🔍" title="Trip not found" message="It may have been deleted." />
+        <EmptyState icon="search-outline" title="Trip not found" message="It may have been deleted." />
       </Screen>
     );
   }

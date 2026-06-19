@@ -31,7 +31,7 @@ export default function EntryDetailScreen() {
   const entry = useAppSelector(selectEntryById(id));
 
   if (!entry) {
-    return <EmptyState emoji="🔍" title="Trip not found" message="It may have been deleted." />;
+    return <EmptyState icon="search-outline" title="Trip not found" message="It may have been deleted." />;
   }
 
   const place = entry.placeName ?? formatCoords(entry.latitude, entry.longitude);

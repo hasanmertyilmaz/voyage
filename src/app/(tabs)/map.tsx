@@ -54,7 +54,7 @@ export default function MapScreen() {
     if (!mapsAvailable || !MapView || !Marker) {
       return (
         <EmptyState
-          emoji="🗺️"
+          icon="map-outline"
           title="Map unavailable here"
           message="Maps need a device or development build. Trips with a location still appear in your journal."
         />
@@ -63,7 +63,7 @@ export default function MapScreen() {
     if (located.length === 0 || !region) {
       return (
         <EmptyState
-          emoji="📍"
+          icon="location-outline"
           title="No mapped trips yet"
           message="Add a location to a trip and it will show up here."
         />

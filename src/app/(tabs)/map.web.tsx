@@ -86,7 +86,7 @@ export default function MapWebScreen() {
       <GradientHeader title="Map" subtitle="Where you've been" />
       {located.length === 0 ? (
         <EmptyState
-          emoji="📍"
+          icon="location-outline"
           title="No mapped trips yet"
           message="Add a location to a trip and it will show up here."
         />
