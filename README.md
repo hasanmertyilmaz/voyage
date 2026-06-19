@@ -208,6 +208,19 @@ builds use `eas build --platform ios --profile preview`.
 
 ---
 
+## 👩‍💻 Authors
+
+**Voyage** was developed collaboratively by:
+
+- **Hasan Mert Yılmaz**
+- **Duygu Toplu**
+
+for the *Mobile Programming Languages* laboratory project.
+
+Both authors contributed to the design, development, testing, and documentation of the application.
+
+---
+
 ## 📝 License
 
 MIT — for educational use.
