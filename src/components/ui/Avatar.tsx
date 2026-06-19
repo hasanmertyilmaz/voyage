@@ -1,32 +1,43 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View } from 'react-native';
 
-import { useThemeContext } from '@/theme/theme-context';
+import { useTheme } from '@/hooks/use-theme';
 
 import { Text } from './Text';
 
-function initials(email?: string | null): string {
-  if (!email) return '🧭';
+function initials(email?: string | null): string | null {
+  if (!email) return null;
   const handle = email.split('@')[0] ?? '';
   const letters = handle.replace(/[^a-zA-Z0-9]/g, '');
-  return letters ? letters.slice(0, 2).toUpperCase() : '🧭';
+  return letters ? letters.slice(0, 2).toUpperCase() : null;
 }
 
 export function Avatar({ email, size = 64 }: { email?: string | null; size?: number }) {
-  const { gradients } = useThemeContext();
+  const theme = useTheme();
+  const label = initials(email);
   return (
-    <LinearGradient
-      colors={gradients.hero}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}
-    >
-      <Text style={[styles.text, { fontSize: size * 0.36 }]}>{initials(email)}</Text>
-    </LinearGradient>
+    <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
+      {label ? (
+        <Text style={[styles.text, { fontSize: size * 0.36, lineHeight: size * 0.46, color: theme.primary }]}>
+          {label}
+        </Text>
+      ) : (
+        <Ionicons name="person" size={size * 0.5} color={theme.primary} />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  avatar: { alignItems: 'center', justifyContent: 'center' },
-  text: { color: '#FFFFFF', fontWeight: '800' },
+  avatar: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#0F172A',
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
+  },
+  text: { fontWeight: '800' },
 });
