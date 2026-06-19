@@ -57,5 +57,5 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textTransform: 'uppercase',
   },
-  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800' },
+  title: { color: '#FFFFFF', fontSize: 28, fontWeight: '800', lineHeight: 34 },
 });

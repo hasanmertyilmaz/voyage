@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   },
   pillText: { color: '#0F766E', fontWeight: '800', fontSize: 13 },
   overlay: { padding: Spacing.lg, gap: 2 },
-  title: { color: '#FFFFFF', fontSize: 22, fontWeight: '800' },
+  title: { color: '#FFFFFF', fontSize: 22, fontWeight: '800', lineHeight: 28 },
   place: { color: 'rgba(255,255,255,0.92)', fontSize: 13, fontWeight: '600', flex: 1 },
   placeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   date: { color: 'rgba(255,255,255,0.75)', fontSize: 12, marginTop: 2 },

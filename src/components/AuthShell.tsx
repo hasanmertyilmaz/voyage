@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.3)',
   },
-  brand: { color: '#FFFFFF', fontSize: 34, fontWeight: '800', letterSpacing: 0.5 },
+  brand: { color: '#FFFFFF', fontSize: 34, fontWeight: '800', letterSpacing: 0.5, lineHeight: 42 },
   tagline: { color: 'rgba(255,255,255,0.85)', fontSize: 15 },
   card: {
     width: '100%',

@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   },
   pillText: { color: '#0F766E', fontWeight: '800', fontSize: 13 },
   heroOverlay: { padding: Spacing.lg, gap: 2 },
-  title: { color: '#FFFFFF', fontSize: 30, fontWeight: '800' },
+  title: { color: '#FFFFFF', fontSize: 30, fontWeight: '800', lineHeight: 38 },
   place: { color: 'rgba(255,255,255,0.92)', fontSize: 14, fontWeight: '600' },
   placeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   date: { color: 'rgba(255,255,255,0.78)', fontSize: 13, marginTop: 2 },
