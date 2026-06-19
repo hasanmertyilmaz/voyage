@@ -147,7 +147,7 @@ export function EntryForm({ initialDraft, units, submitting, submitLabel, onSubm
           <Image source={{ uri: photoPreview }} style={styles.photo} contentFit="cover" transition={150} />
         ) : (
           <View style={[styles.photo, styles.photoPlaceholder, { backgroundColor: theme.surfaceAlt }]}>
-            <Text style={styles.photoEmoji}>🏞️</Text>
+            <Ionicons name="images-outline" size={46} color={theme.textMuted} />
             <Text variant="bodyMuted">Add a photo of your trip</Text>
           </View>
         )}
@@ -280,7 +280,6 @@ const styles = StyleSheet.create({
   photoCard: { gap: Spacing.md, padding: Spacing.md },
   photo: { width: '100%', height: 200, borderRadius: Radius.md },
   photoPlaceholder: { alignItems: 'center', justifyContent: 'center', gap: Spacing.sm },
-  photoEmoji: { fontSize: 44 },
   photoButtons: { flexDirection: 'row', gap: Spacing.md },
   notes: { minHeight: 96, textAlignVertical: 'top', paddingTop: Spacing.sm },
   dateRow: {
